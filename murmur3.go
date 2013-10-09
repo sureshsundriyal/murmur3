@@ -21,9 +21,7 @@ type sum64_128 struct {
 	offset uint8
 }
 
-func New64_128() Hash128 {
-	return &sum64_128{0, 0, 0, 0, 0, 0}
-}
+func New64_128() Hash128 { return &sum64_128{0, 0, 0, 0, 0, 0} }
 
 func (s *sum64_128) Reset() {
 	s.h1, s.h2, s.k1, s.k2, s.length, s.offset = 0, 0, 0, 0, 0, 0
@@ -73,8 +71,12 @@ func (s *sum64_128) Sum128() (uint64, uint64) {
 	return h1, h2
 }
 
-func (s *sum64_128) Sum(b []byte) []byte {
-	return make([]byte, 16)
+func (s *sum64_128) Sum(in []byte) []byte {
+	h1, h2 := s.Sum128()
+	return append(in, byte(h1>>56), byte(h1>>48), byte(h1>>40), byte(h1>>32),
+		byte(h1>>24), byte(h1>>16), byte(h1>>8), byte(h1), byte(h2>>56),
+		byte(h2>>48), byte(h2>>32), byte(h2>>24), byte(h2>>16),
+		byte(h2>>8), byte(h2))
 }
 
 func (s *sum64_128) Write(data []byte) (int, error) {
