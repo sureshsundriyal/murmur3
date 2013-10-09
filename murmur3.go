@@ -48,14 +48,6 @@ func (s *sum64_128) body() {
 	s.h2 = s.h2*5 + 0x38495ab5
 }
 
-func fmix64(k *uint64) {
-	*k ^= *k >> 33
-	*k *= 0xff51afd7ed558ccd
-	*k ^= *k >> 33
-	*k *= 0xc4ceb9fe1a85ec53
-	*k ^= *k >> 33
-}
-
 func (s *sum64_128) Sum128() (uint64, uint64) {
 	var h1, h2 uint64 = s.h1, s.h2
 
@@ -82,8 +74,17 @@ func (s *sum64_128) Sum128() (uint64, uint64) {
 	h1 += h2
 	h2 += h1
 
-	fmix64(&h1)
-	fmix64(&h2)
+	h1 ^= h1 >> 33
+	h1 *= 0xff51afd7ed558ccd
+	h1 ^= h1 >> 33
+	h1 *= 0xc4ceb9fe1a85ec53
+	h1 ^= h1 >> 33
+
+	h2 ^= h2 >> 33
+	h2 *= 0xff51afd7ed558ccd
+	h2 ^= h2 >> 33
+	h2 *= 0xc4ceb9fe1a85ec53
+	h2 ^= h2 >> 33
 
 	h1 += h2
 	h2 += h1
