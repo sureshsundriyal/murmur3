@@ -29,25 +29,6 @@ func (s *sum64_128) Reset() {
 	s.h1, s.h2, s.k1, s.k2, s.length, s.offset = 0, 0, 0, 0, 0, 0
 }
 
-func (s *sum64_128) body() {
-	s.k1 *= c1_64_128
-	s.k1 = (s.k1 << 31) | (s.k1 >> (64 - 31))
-	s.h1 ^= s.k1
-
-	s.h1 = (s.h1 << 27) | (s.h1 >> (64 - 27))
-	s.h1 += s.h2
-	s.h1 = s.h1*5 + 0x52dce729
-
-	s.k2 *= c2_64_128
-	s.k2 = (s.k2 << 33) | (s.k2 >> (64 - 33))
-	s.k2 *= c1_64_128
-	s.h2 ^= s.k2
-
-	s.h2 = (s.h2 << 31) | (s.h2 >> (64 - 32))
-	s.h2 += s.h1
-	s.h2 = s.h2*5 + 0x38495ab5
-}
-
 func (s *sum64_128) Sum128() (uint64, uint64) {
 	var h1, h2 uint64 = s.h1, s.h2
 
@@ -118,7 +99,22 @@ func (s *sum64_128) Write(data []byte) (int, error) {
 		}
 
 		if s.offset == 16 {
-			s.body()
+			s.k1 *= c1_64_128
+			s.k1 = (s.k1 << 31) | (s.k1 >> (64 - 31))
+			s.h1 ^= s.k1
+
+			s.h1 = (s.h1 << 27) | (s.h1 >> (64 - 27))
+			s.h1 += s.h2
+			s.h1 = s.h1*5 + 0x52dce729
+
+			s.k2 *= c2_64_128
+			s.k2 = (s.k2 << 33) | (s.k2 >> (64 - 33))
+			s.k2 *= c1_64_128
+			s.h2 ^= s.k2
+
+			s.h2 = (s.h2 << 31) | (s.h2 >> (64 - 32))
+			s.h2 += s.h1
+			s.h2 = s.h2*5 + 0x38495ab5
 			s.k1 = 0
 			s.k2 = 0
 			s.offset = 0
