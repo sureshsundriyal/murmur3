@@ -214,8 +214,6 @@ func (s *sum32_128) Write(data []byte) (int, error) {
 			s.k3 |= uint32(uint32(c) << uint32((s.offset%4)*8))
 		} else if s.offset >= 12 && s.offset < 16 {
 			s.k4 |= uint32(uint32(c) << uint32((s.offset%4)*8))
-		} else {
-			//something wrong
 		}
 		s.offset++
 
@@ -275,13 +273,10 @@ func (s *sum64_128) Write(data []byte) (int, error) {
 		// across systems.
 		if s.offset < 8 {
 			s.k1 |= uint64(uint64(c) << uint64(s.offset*8))
-			s.offset++
 		} else if s.offset >= 8 && s.offset < 16 {
 			s.k2 |= uint64(uint64(c) << uint64((s.offset%8)*8))
-			s.offset++
-		} else {
-			//something wrong
 		}
+		s.offset++
 
 		if s.offset == 16 {
 			s.k1 *= c1_64_128
