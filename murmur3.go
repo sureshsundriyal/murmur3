@@ -1,6 +1,7 @@
 package murmur3
 
 import "hash"
+import "fmt"
 
 type Hash128 interface {
 	hash.Hash
@@ -256,6 +257,7 @@ func (s *sum32_128) Write(data []byte) (int, error) {
 			s.h4 += s.h1
 			s.h4 = s.h4*5 + 0x32ac3b17
 
+			s.k1, s.k2, s.k3, s.k4 = 0, 0, 0, 0
 			s.offset = 0
 		}
 	}
