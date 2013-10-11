@@ -295,9 +295,10 @@ func (s *sum64_128) Write(data []byte) (int, error) {
 			s.k2 *= c1_64_128
 			s.h2 ^= s.k2
 
-			s.h2 = (s.h2 << 31) | (s.h2 >> (64 - 32))
+			s.h2 = (s.h2 << 31) | (s.h2 >> (64 - 31))
 			s.h2 += s.h1
 			s.h2 = s.h2*5 + 0x38495ab5
+
 			s.k1 = 0
 			s.k2 = 0
 
