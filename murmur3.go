@@ -1,7 +1,6 @@
 package murmur3
 
 import "hash"
-import "fmt"
 
 type Hash128 interface {
 	hash.Hash
