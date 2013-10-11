@@ -54,35 +54,36 @@ func (s *sum64_128) Reset() {
 
 func (s *sum32_128) Sum128() (uint64, uint64) {
 	var h1, h2, h3, h4 = s.h1, s.h2, s.h3, s.h4
+	var k1, k2, k3, k4 uint32 = s.k1, s.k2, s.k3, s.k4
 
 	//tail
 	switch {
 	case s.offset > 12:
-		s.k4 *= c4_32_128
-		s.k4 = (s.k4 << 18) | (s.k4 >> (32 - 18))
-		s.k4 *= c1_32_128
-		h4 ^= s.k4
+		k4 *= c4_32_128
+		k4 = (k4 << 18) | (k4 >> (32 - 18))
+		k4 *= c1_32_128
+		h4 ^= k4
 		fallthrough
 
 	case s.offset > 8:
-		s.k3 *= c3_32_128
-		s.k3 = (s.k3 << 17) | (s.k3 >> (32 - 17))
-		s.k3 *= c4_32_128
-		h3 ^= s.k3
+		k3 *= c3_32_128
+		k3 = (k3 << 17) | (k3 >> (32 - 17))
+		k3 *= c4_32_128
+		h3 ^= k3
 		fallthrough
 
 	case s.offset > 4:
-		s.k2 *= c2_32_128
-		s.k2 = (s.k2 << 16) | (s.k3 >> (32 - 16))
-		s.k2 *= c3_32_128
-		h2 ^= s.k2
+		k2 *= c2_32_128
+		k2 = (k2 << 16) | (k2 >> (32 - 16))
+		k2 *= c3_32_128
+		h2 ^= k2
 		fallthrough
 
 	case s.offset > 0:
-		s.k1 *= c1_32_128
-		s.k1 = (s.k1 << 15) | (s.k1 >> (32 - 15))
-		s.k1 *= c2_32_128
-		h1 ^= s.k1
+		k1 *= c1_32_128
+		k1 = (k1 << 15) | (k1 >> (32 - 15))
+		k1 *= c2_32_128
+		h1 ^= k1
 	}
 
 	//finalization
