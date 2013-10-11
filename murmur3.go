@@ -137,21 +137,22 @@ func (s *sum32_128) Sum128() (uint64, uint64) {
 
 func (s *sum64_128) Sum128() (uint64, uint64) {
 	var h1, h2 uint64 = s.h1, s.h2
+	var k1, k2 uint64 = s.k1, s.k2
 
 	//tail
 	switch {
 	case s.offset > 8:
-		s.k2 *= c2_64_128
-		s.k2 = (s.k2 << 33) | (s.k2 >> (64 - 33))
-		s.k2 *= c1_64_128
-		h2 ^= s.k2
+		k2 *= c2_64_128
+		k2 = (k2 << 33) | (k2 >> (64 - 33))
+		k2 *= c1_64_128
+		h2 ^= k2
 		fallthrough
 
 	case s.offset > 0:
-		s.k1 *= c1_64_128
-		s.k1 = (s.k1 << 31) | (s.k1 >> (64 - 31))
-		s.k1 *= c2_64_128
-		h1 ^= s.k1
+		k1 *= c1_64_128
+		k1 = (k1 << 31) | (k1 >> (64 - 31))
+		k1 *= c2_64_128
+		h1 ^= k1
 	}
 
 	//finalization
