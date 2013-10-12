@@ -2,21 +2,25 @@ package murmur3
 
 import "hash"
 
+//Hash128 interface for 128-bit hash functions.
 type Hash128 interface {
 	hash.Hash
 	Sum128() (uint64, uint64)
 }
 
 const (
+	//Constants for x86 128-bit hash function.
 	c1_32_128 = uint32(0x239b961b)
 	c2_32_128 = uint32(0xab0e9789)
 	c3_32_128 = uint32(0x38b34ae5)
 	c4_32_128 = uint32(0xa1e38b93)
 
+	//Constants for x86_64 128-bit hash function.
 	c1_64_128 = uint64(0x87c37b91114253d5)
 	c2_64_128 = uint64(0x4cf5ad432745937f)
 )
 
+//sum32_128 struct contains variables used in x86 128-bit hash calculations.
 type sum32_128 struct {
 	h1     uint32
 	h2     uint32
@@ -30,6 +34,7 @@ type sum32_128 struct {
 	offset uint8
 }
 
+//sum63_128 struct contains variables used in x86_64 128-bit hash calculations.
 type sum64_128 struct {
 	h1     uint64
 	h2     uint64
@@ -39,15 +44,19 @@ type sum64_128 struct {
 	offset uint8
 }
 
+//New32_128 returns a Murmur3 hash.Hash optimized for 32-bit architecture.
 func New32_128() Hash128 { return &sum32_128{0, 0, 0, 0, 0, 0, 0, 0, 0, 0} }
+//New64_128 returns a Murmur3 hash.Hash optimized for 64-bit architecture.
 func New64_128() Hash128 { return &sum64_128{0, 0, 0, 0, 0, 0} }
 
+//Reset resets the hash to one with zero bytes written.
 func (s *sum32_128) Reset() {
 	s.h1, s.h2, s.h3, s.h4 = 0, 0, 0, 0
 	s.k1, s.k2, s.k3, s.k4 = 0, 0, 0, 0
 	s.length, s.offset = 0, 0
 }
 
+//Reset resets the hash to one with zero bytes written.
 func (s *sum64_128) Reset() {
 	s.h1, s.h2, s.k1, s.k2, s.length, s.offset = 0, 0, 0, 0, 0, 0
 }
