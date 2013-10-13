@@ -145,8 +145,8 @@ func (s *sum32_128) Sum128() (uint64, uint64) {
 	h3 += h1
 	h4 += h1
 
-	return uint64((uint64(h1) << 32) | uint64(h2)),
-		uint64((uint64(h3) << 32) | uint64(h4))
+	return uint64((uint64(h2) << 32) | uint64(h1)),
+		uint64((uint64(h4) << 32) | uint64(h3))
 }
 
 func (s *sum64_128) Sum128() (uint64, uint64) {
