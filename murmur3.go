@@ -4,12 +4,16 @@
 
 package murmur3
 
-import "hash"
+import (
+	"errors"
+	"hash"
+)
 
 //Hash128 interface for 128-bit hash functions.
 type Hash128 interface {
 	hash.Hash
 	Sum128() (uint64, uint64)
+	SetSeed(seed uint32) error
 }
 
 const (
@@ -49,9 +53,15 @@ type sum64_128 struct {
 }
 
 //New32_128 returns a Murmur3 hash.Hash optimized for 32-bit architecture.
-func New32_128() Hash128 { return &sum32_128{0, 0, 0, 0, 0, 0, 0, 0, 0, 0} }
+func New32_128(seed uint32) Hash128 {
+	return &sum32_128{seed, seed, seed, seed, seed, 0, 0, 0, 0, 0}
+}
+
 //New64_128 returns a Murmur3 hash.Hash optimized for 64-bit architecture.
-func New64_128() Hash128 { return &sum64_128{0, 0, 0, 0, 0, 0} }
+func New64_128(seed uint32) Hash128 {
+	seed64 := uint64(seed)
+	return &sum64_128{seed64, seed64, 0, 0, 0, 0}
+}
 
 //Reset resets the hash to one with zero bytes written.
 func (s *sum32_128) Reset() {
@@ -63,6 +73,24 @@ func (s *sum32_128) Reset() {
 //Reset resets the hash to one with zero bytes written.
 func (s *sum64_128) Reset() {
 	s.h1, s.h2, s.k1, s.k2, s.length, s.offset = 0, 0, 0, 0, 0, 0
+}
+
+func (s *sum32_128) SetSeed(seed uint32) error {
+	if s.h1 != 0 || s.h2 != 0 || s.h3 != 0 || s.h4 != 0 {
+		return errors.New("hash needs to be reset")
+	} else {
+		s.h1, s.h2, s.h3, s.h4 = seed, seed, seed, seed
+		return nil
+	}
+}
+
+func (s *sum64_128) SetSeed(seed uint32) error {
+	if s.h1 != 0 || s.h2 != 0 {
+		return errors.New("hash needs to be reset")
+	} else {
+		s.h1, s.h2 = uint64(seed), uint64(seed)
+		return nil
+	}
 }
 
 func (s *sum32_128) Sum128() (uint64, uint64) {

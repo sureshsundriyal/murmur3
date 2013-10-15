@@ -13,7 +13,7 @@ func TestAll(t *testing.T) {
 
 	x := []byte(`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`)
 
-	h128 := New64_128()
+	h128 := New64_128(0)
 	h128.Write(s)
 	h1, h2 := h128.Sum128()
 
@@ -28,12 +28,12 @@ func TestAll(t *testing.T) {
 		t.Error("x86_64: ", x, h1, h2)
 	}
 
-	h128 = New32_128()
+	h128 = New32_128(0)
 	h128.Write(s)
 	h1, h2 = h128.Sum128()
 
 	if h1 != 15821672119091348640 || h2 != 11158567162092401078 {
-		t.Error("x86: ", s, h1 , h2)
+		t.Error("x86: ", s, h1, h2)
 	}
 
 	h128.Reset()
