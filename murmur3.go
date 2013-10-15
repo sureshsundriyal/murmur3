@@ -1,6 +1,10 @@
 // Copyright (c) 2013, Suresh Sundriyal. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be found
 // in the LICENSE file.
+// This is a progressive processing version of the MurmurHash3 family of hash
+// functions by Austin Appleby and is a translation of the public domain code
+// that can be found here:
+// https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash3.cpp?r=150
 
 package murmur3
 
