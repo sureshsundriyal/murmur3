@@ -42,7 +42,7 @@ type sum32_128 struct {
 	offset uint8
 }
 
-//sum63_128 struct contains variables used in x86_64 128-bit hash calculations.
+//sum64_128 struct contains variables used in x86_64 128-bit hash calculations.
 type sum64_128 struct {
 	h1     uint64
 	h2     uint64
