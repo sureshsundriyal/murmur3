@@ -21,7 +21,18 @@ type Hash128 interface {
 	SetSeed(seed uint32) error
 }
 
+type Hash32 interface {
+	hash.Hash
+	Sum32() uint32
+	//SetSeed sets the seed after the hash has been Reset.
+	SetSeed(seed uint32) error
+}
+
 const (
+	//Constants for x86 32-bit hash function.
+	c1_32_32 = 0xcc9e2d51
+	c2_32_32 = 0x1b873593
+
 	//Constants for x86 128-bit hash function.
 	c1_32_128 = 0x239b961b
 	c2_32_128 = 0xab0e9789
@@ -32,6 +43,14 @@ const (
 	c1_64_128 = 0x87c37b91114253d5
 	c2_64_128 = 0x4cf5ad432745937f
 )
+
+//sum32_32 struct contains variables used in x86 32-bit hash calculations.
+type sum32_32 struct {
+	h1     uint32
+	k1     uint32
+	length uint32
+	offset uint8
+}
 
 //sum32_128 struct contains variables used in x86 128-bit hash calculations.
 type sum32_128 struct {
@@ -57,15 +76,25 @@ type sum64_128 struct {
 	offset uint8
 }
 
-//New32 returns a Murmur3 128-bit hash.Hash optimized for 32-bit architecture.
+// New32a returns a Murmur3 32-bit hash.Hash opmtimized for 32-bit architecture.
+func New32a(seed uint32) Hash32 {
+	return &sum32_32{seed, 0, 0, 0}
+}
+
+// New32 returns a Murmur3 128-bit hash.Hash optimized for 32-bit architecture.
 func New32(seed uint32) Hash128 {
 	return &sum32_128{seed, seed, seed, seed, seed, 0, 0, 0, 0, 0}
 }
 
-//New64 returns a Murmur3 128-bit hash.Hash optimized for 64-bit architecture.
+// New64 returns a Murmur3 128-bit hash.Hash optimized for 64-bit architecture.
 func New64(seed uint32) Hash128 {
 	seed64 := uint64(seed)
 	return &sum64_128{seed64, seed64, 0, 0, 0, 0}
+}
+
+// Reset resets the hash to one with zero bytes written.
+func (s *sum32_32) Reset() {
+	s.h1, s.k1, s.length, s.offset = 0, 0, 0, 0
 }
 
 //Reset resets the hash to one with zero bytes written.
@@ -78,6 +107,15 @@ func (s *sum32_128) Reset() {
 //Reset resets the hash to one with zero bytes written.
 func (s *sum64_128) Reset() {
 	s.h1, s.h2, s.k1, s.k2, s.length, s.offset = 0, 0, 0, 0, 0, 0
+}
+
+func (s *sum32_32) SetSeed(seed uint32) error {
+	if s.h1 != 0 {
+		return errors.New("hash needs to be reset")
+	} else {
+		s.h1 = seed
+		return nil
+	}
 }
 
 func (s *sum32_128) SetSeed(seed uint32) error {
@@ -96,6 +134,30 @@ func (s *sum64_128) SetSeed(seed uint32) error {
 		s.h1, s.h2 = uint64(seed), uint64(seed)
 		return nil
 	}
+}
+
+func (s *sum32_32) Sum32() uint32 {
+	var h1 = s.h1
+	var k1 = s.k1
+
+	//tail
+	if k1 != 0 {
+		k1 *= c1_32_32
+		k1 = (k1 << 16) | (k1 >> (32 - 16))
+		k1 *= c2_32_32
+		h1 ^= k1
+	}
+
+	//finalization
+	h1 ^= s.length
+
+	h1 ^= h1 >> 16
+	h1 *= 0x85ebca6b
+	h1 ^= h1 >> 13
+	h1 *= 0xc2b2ae35
+	h1 ^= h1 >> 16
+
+	return h1
 }
 
 func (s *sum32_128) Sum128() (uint64, uint64) {
@@ -227,6 +289,11 @@ func (s *sum64_128) Sum128() (uint64, uint64) {
 	return h1, h2
 }
 
+func (s *sum32_32) Sum(in []byte) []byte {
+	h1 := s.Sum32()
+	return append(in, byte(h1>>24), byte(h1>>16), byte(h1>>8), byte(h1))
+}
+
 func (s *sum32_128) Sum(in []byte) []byte {
 	h1, h2 := s.Sum128()
 	return append(in, byte(h1>>56), byte(h1>>48), byte(h1>>40), byte(h1>>32),
@@ -241,6 +308,37 @@ func (s *sum64_128) Sum(in []byte) []byte {
 		byte(h1>>24), byte(h1>>16), byte(h1>>8), byte(h1), byte(h2>>56),
 		byte(h2>>48), byte(h2>>32), byte(h2>>24), byte(h2>>16),
 		byte(h2>>8), byte(h2))
+}
+
+func (s *sum32_32) Write(data []byte) (int, error) {
+	length := len(data)
+	if length == 0 {
+		return 0, nil
+	}
+	s.length += uint32(length)
+
+	for _, c := range data {
+		// TODO: Might want to check this for endianness for consistency
+		// across systems.
+		if s.offset < 4 {
+			s.k1 |= uint32(uint32(c) << uint32(s.offset*8))
+		}
+		s.offset++
+
+		if s.offset == 4 {
+			s.k1 *= c1_32_32
+			s.k1 = (s.k1 << 15) | (s.k1 >> (32 - 15))
+			s.k1 *= c2_32_32
+
+			s.h1 ^= s.k1
+			s.h1 = (s.h1 << 13) | (s.h1 >> (32 - 13))
+			s.h1 = s.h1*5 + 0xe6546b64
+
+			s.k1 = 0
+			s.offset = 0
+		}
+	}
+	return length, nil
 }
 
 func (s *sum32_128) Write(data []byte) (int, error) {
@@ -355,8 +453,10 @@ func (s *sum64_128) Write(data []byte) (int, error) {
 	return length, nil
 }
 
+func (s *sum32_32) BlockSize() int  { return 4 }
 func (s *sum32_128) BlockSize() int { return 16 }
 func (s *sum64_128) BlockSize() int { return 16 }
 
+func (s *sum32_32) Size() int  { return 4 }
 func (s *sum32_128) Size() int { return 16 }
 func (s *sum64_128) Size() int { return 16 }
