@@ -5,8 +5,8 @@
 package murmur3_test
 
 import (
-	"testing"
 	. "../murmur3"
+	"testing"
 )
 
 func TestAll(t *testing.T) {
