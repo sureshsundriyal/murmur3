@@ -23,14 +23,14 @@ type Hash128 interface {
 
 const (
 	//Constants for x86 128-bit hash function.
-	c1_32_128 = uint32(0x239b961b)
-	c2_32_128 = uint32(0xab0e9789)
-	c3_32_128 = uint32(0x38b34ae5)
-	c4_32_128 = uint32(0xa1e38b93)
+	c1_32_128 = 0x239b961b
+	c2_32_128 = 0xab0e9789
+	c3_32_128 = 0x38b34ae5
+	c4_32_128 = 0xa1e38b93
 
 	//Constants for x86_64 128-bit hash function.
-	c1_64_128 = uint64(0x87c37b91114253d5)
-	c2_64_128 = uint64(0x4cf5ad432745937f)
+	c1_64_128 = 0x87c37b91114253d5
+	c2_64_128 = 0x4cf5ad432745937f
 )
 
 //sum32_128 struct contains variables used in x86 128-bit hash calculations.
