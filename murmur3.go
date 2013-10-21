@@ -17,6 +17,7 @@ import (
 type Hash128 interface {
 	hash.Hash
 	Sum128() (uint64, uint64)
+	//SetSeed sets the seed after the hash has been Reset.
 	SetSeed(seed uint32) error
 }
 

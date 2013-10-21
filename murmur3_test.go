@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be found
 // in the LICENSE file.
 
-package murmur3
+package murmur3_test
 
 import (
 	"testing"
+	. "../murmur3"
 )
 
 func TestAll(t *testing.T) {
@@ -29,7 +30,6 @@ func TestAll(t *testing.T) {
 	if h1 != 17440987278262125697 || h2 != 15376406881033980724 {
 		t.Error("x86_64(seed): ", s, h1, h2)
 	}
-
 
 	h128.Reset()
 	h128.Write(x)
