@@ -57,13 +57,13 @@ type sum64_128 struct {
 	offset uint8
 }
 
-//New32_128 returns a Murmur3 hash.Hash optimized for 32-bit architecture.
-func New32_128(seed uint32) Hash128 {
+//New32 returns a Murmur3 128-bit hash.Hash optimized for 32-bit architecture.
+func New32(seed uint32) Hash128 {
 	return &sum32_128{seed, seed, seed, seed, seed, 0, 0, 0, 0, 0}
 }
 
-//New64_128 returns a Murmur3 hash.Hash optimized for 64-bit architecture.
-func New64_128(seed uint32) Hash128 {
+//New64 returns a Murmur3 128-bit hash.Hash optimized for 64-bit architecture.
+func New64(seed uint32) Hash128 {
 	seed64 := uint64(seed)
 	return &sum64_128{seed64, seed64, 0, 0, 0, 0}
 }
