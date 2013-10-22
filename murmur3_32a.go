@@ -8,8 +8,6 @@
 
 package murmur3
 
-import "errors"
-
 const (
 	//Constants for x86 32-bit hash function.
 	c1_32_32 = 0xcc9e2d51
@@ -34,13 +32,9 @@ func (s *sum32_32) Reset() {
 	s.h1, s.k1, s.length, s.offset = 0, 0, 0, 0
 }
 
-func (s *sum32_32) SetSeed(seed uint32) error {
-	if s.h1 != 0 {
-		return errors.New("hash needs to be reset")
-	} else {
-		s.h1 = seed
-		return nil
-	}
+func (s *sum32_32) ResetAndSetSeed(seed uint32) {
+	s.Reset()
+	s.h1 = seed
 }
 
 func (s *sum32_32) Write(data []byte) (int, error) {

@@ -40,8 +40,7 @@ func TestAll(t *testing.T) {
 	}
 
 	// Test the x86_64 128-bit version of Murmur3 by hashing 'hello' with a seed.
-	h128.Reset()
-	h128.SetSeed(12345)
+	h128.ResetAndSetSeed(12345)
 	h128.Write(s)
 	h1, h2 = h128.Sum128()
 
@@ -77,8 +76,7 @@ func TestAll(t *testing.T) {
 	}
 
 	// Test the x86 128-bit version of Murmur3 by hashing 'hello' with a seed.
-	h128.Reset()
-	h128.SetSeed(12345)
+	h128.ResetAndSetSeed(12345)
 	h128.Write(s)
 	h1, h2 = h128.Sum128()
 

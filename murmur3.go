@@ -10,17 +10,20 @@ package murmur3
 
 import "hash"
 
-//Hash128 interface for 128-bit hash functions.
-type Hash128 interface {
+//Extend hash.Hash to accomodate for setting the salt in Reset()
+type HashM3 interface {
 	hash.Hash
-	Sum128() (uint64, uint64)
-	//SetSeed sets the seed after the hash has been Reset.
-	SetSeed(seed uint32) error
+	//ResetAndSetSeed resets the hash and sets the seed.
+	ResetAndSetSeed(seed uint32)
 }
 
 type Hash32 interface {
-	hash.Hash
+	HashM3
 	Sum32() uint32
-	//SetSeed sets the seed after the hash has been Reset.
-	SetSeed(seed uint32) error
+}
+
+//Hash128 interface for 128-bit hash functions.
+type Hash128 interface {
+	HashM3
+	Sum128() (uint64, uint64)
 }
