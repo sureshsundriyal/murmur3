@@ -19,7 +19,7 @@ func TestAll(t *testing.T) {
 	h32.Write(s)
 	h := h32.Sum32()
 	if h != 1743816747 {
-		t.Error("x86_32: ", s, h)
+		t.Errorf("x86_32: %s, %d", s, h)
 	}
 
 	// Test the x86 32-bit version of Murmur3 by hashing a longer string.
@@ -27,7 +27,7 @@ func TestAll(t *testing.T) {
 	h32.Write(x)
 	h = h32.Sum32()
 	if h != 4193992801 {
-		t.Error("x86_33: ", x, h)
+		t.Errorf("x86_32: %s, %d", x, h)
 	}
 
 	// Test the x86_64 128-bit version of Murmur3 by hashing 'hello'.
@@ -36,7 +36,7 @@ func TestAll(t *testing.T) {
 	h1, h2 := h128.Sum128()
 
 	if h1 != 14688674573012802306 || h2 != 6565844092913065241 {
-		t.Error("x86_64: ", s, h1, h2)
+		t.Errorf("x86_64_128: %s, %d, %d", s, h1, h2)
 	}
 
 	// Test the x86_64 128-bit version of Murmur3 by hashing 'hello' with a seed.
@@ -46,7 +46,7 @@ func TestAll(t *testing.T) {
 	h1, h2 = h128.Sum128()
 
 	if h1 != 17440987278262125697 || h2 != 15376406881033980724 {
-		t.Error("x86_64(seed): ", s, h1, h2)
+		t.Errorf("x86_64_128(seed): %s, %d, %d", s, h1, h2)
 	}
 
 	// Test the x86_64 128-bit version of Murmur3 by hashing a longer string.
@@ -55,7 +55,7 @@ func TestAll(t *testing.T) {
 	h1, h2 = h128.Sum128()
 
 	if h1 != 1706326840306453215 || h2 != 5127165288307402704 {
-		t.Error("x86_64: ", x, h1, h2)
+		t.Errorf("x86_64_128: %s, %d, %d", x, h1, h2)
 	}
 
 	// Test the x86 128-bit version of Murmur3 by hashing 'hello'.
@@ -64,7 +64,7 @@ func TestAll(t *testing.T) {
 	h1, h2 = h128.Sum128()
 
 	if h1 != 15821672119091348640 || h2 != 11158567162092401078 {
-		t.Error("x86: ", s, h1, h2)
+		t.Errorf("x86_128: %s, %d, %d", s, h1, h2)
 	}
 
 	// Test the x86 128-bit version of Murmur3 by hashing a longer string.
@@ -73,7 +73,7 @@ func TestAll(t *testing.T) {
 	h1, h2 = h128.Sum128()
 
 	if h1 != 223949659430422294 || h2 != 10022274208940483369 {
-		t.Error("x86: ", x, h1, h2)
+		t.Errorf("x86_128: %d, %s, %s", x, h1, h2)
 	}
 
 	// Test the x86 128-bit version of Murmur3 by hashing 'hello' with a seed.
@@ -83,7 +83,7 @@ func TestAll(t *testing.T) {
 	h1, h2 = h128.Sum128()
 
 	if h1 != 7882561715466346695 || h2 != 11883514271246235972 {
-		t.Error("x86 (seed): ", s, h1, h2)
+		t.Errorf("x86_128(seed): %s, %d, %d", s, h1, h2)
 	}
 
 }
