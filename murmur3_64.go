@@ -9,12 +9,12 @@
 package murmur3
 
 const (
-	//Constants for x86_64 128-bit hash function.
+	// Constants for x86_64 128-bit hash function.
 	c1_64_128 = 0x87c37b91114253d5
 	c2_64_128 = 0x4cf5ad432745937f
 )
 
-//sum64_128 struct contains variables used in x86_64 128-bit hash calculations.
+// sum64_128 struct contains variables used in x86_64 128-bit hash calculations.
 type sum64_128 struct {
 	h1     uint64
 	h2     uint64
@@ -30,7 +30,7 @@ func New64(seed uint32) Hash128 {
 	return &sum64_128{seed64, seed64, 0, 0, 0, 0}
 }
 
-//Reset resets the hash to one with zero bytes written.
+// Reset resets the hash to one with zero bytes written.
 func (s *sum64_128) Reset() {
 	s.h1, s.h2, s.k1, s.k2, s.length, s.offset = 0, 0, 0, 0, 0, 0
 }
@@ -90,7 +90,7 @@ func (s *sum64_128) Sum128() (uint64, uint64) {
 	var h1, h2 uint64 = s.h1, s.h2
 	var k1, k2 uint64 = s.k1, s.k2
 
-	//tail
+	// tail
 	switch {
 	case s.offset > 8:
 		k2 *= c2_64_128
@@ -106,7 +106,7 @@ func (s *sum64_128) Sum128() (uint64, uint64) {
 		h1 ^= k1
 	}
 
-	//finalization
+	// finalization
 	h1 ^= s.length
 	h2 ^= s.length
 

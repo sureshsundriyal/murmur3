@@ -9,12 +9,12 @@
 package murmur3
 
 const (
-	//Constants for x86 32-bit hash function.
+	// Constants for x86 32-bit hash function.
 	c1_32_32 = 0xcc9e2d51
 	c2_32_32 = 0x1b873593
 )
 
-//sum32_32 struct contains variables used in x86 32-bit hash calculations.
+// sum32_32 struct contains variables used in x86 32-bit hash calculations.
 type sum32_32 struct {
 	h1     uint32
 	k1     uint32
@@ -72,7 +72,7 @@ func (s *sum32_32) Sum32() uint32 {
 	var h1 = s.h1
 	var k1 = s.k1
 
-	//tail
+	// tail
 	if k1 != 0 {
 		k1 *= c1_32_32
 		k1 = (k1 << 16) | (k1 >> (32 - 16))
@@ -80,7 +80,7 @@ func (s *sum32_32) Sum32() uint32 {
 		h1 ^= k1
 	}
 
-	//finalization
+	// finalization
 	h1 ^= s.length
 
 	h1 ^= h1 >> 16
