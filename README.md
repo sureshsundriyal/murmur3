@@ -1,5 +1,6 @@
+<!---
 [![Build Status](https://travis-ci.org/sureshsundriyal/murmur3.png?branch=master)](https://travis-ci.org/sureshsundriyal/murmur3)
-
+-->
 [![GoDoc](http://godoc.org/github.com/sureshsundriyal/murmur3?status.png)](http://godoc.org/github.com/sureshsundriyal/murmur3)
 
 _This is the source repository for **murmur3**_
