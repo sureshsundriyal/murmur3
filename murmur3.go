@@ -6,11 +6,14 @@
 // that can be found here:
 // https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash3.cpp?r=150
 
+// Package murmur3 provides a progressive processing version of Austin Appleby's
+// Murmur3 Hash functions.
 package murmur3
 
 import "hash"
 
-// Extend hash.Hash to accomodate for setting the salt in Reset()
+// HashM3 extends hash.Hash and provides an additional function ResetAndSetSeed
+// to reset the structures and set the seed.
 type HashM3 interface {
 	hash.Hash
 	//ResetAndSetSeed resets the hash and sets the seed.
