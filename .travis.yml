@@ -3,7 +3,7 @@ go:
  - 1.1.2
  - 1.2
  - release
-# - tip
+ - tip
 
 script:
  - go test -v
